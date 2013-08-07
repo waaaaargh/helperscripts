@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Rotate the screen clockwise 90 degrees.
+# Also, rotate the wacom pointer so the stylus will still work.
+# Additionally, since Compiz does not work rotated, replace it with Metacity.
+
+# REQUIRES: linuxwacom (http://linuxwacom.sourceforge.net/)
+
+# Ben Wong,  October 1, 2010
+# Public domain.  No rights reserved. 
+
+case $(xsetwacom get 17 Rotate) in
+    ccw)  # Currently top is rotated left, we should set it normal (0°)
+      xrandr -o 0
+      xsetwacom set 17  Rotate 0
+      ;;
+    none)  # Screen is not rotated, we should rotate it right (90°)
+       xrandr -o 3
+       xsetwacom set 17 Rotate 1
+       ;;
+    cw)    # Top of screen is rotated right, we should invert it (180°)
+       xrandr -o 2
+       xsetwacom set 17 Rotate 3
+       ;;
+    half)  # Screen is inverted, we should rotate it left (270°)
+       xrandr -o 1
+       xsetwacom set 17 Rotate 2
+       ;;
+    *)
+       echo "Unknown result from 'xsetwacom get stylus Rotate'" >&2
+       exit 1
+       ;;
+esac
